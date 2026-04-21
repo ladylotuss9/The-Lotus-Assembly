@@ -790,9 +790,11 @@ header { animation: fadeUp 0.7s ease both; }
       <div class="meet-content">
         <h3>Hi, I'm Lady Lotus</h3>
         <span class="meet-title">Lady of the Womb</span>
-        <p>I built The Lotus Assembly because too many women are navigating their bodies, their health, and their womanhood without the information they were always owed. As the Lady of the Womb, I try my hardest to lead with <strong>intentional education, integrity,</strong> and a deep belief that every woman has the right to know herself fully — whether it be physically, emotionally, spiritually, or politically.</p>
-        <p>My mission is to close the gap between what women are told and what they actually deserve to know — about their bodies, their rights, and the issues that directly affect their lives. This is not a space for surface-level conversation. <strong>This is where women go deeper and where women come to rise.</strong></p>
-        <p>If my page resonated with you, join a cause or come find us in the Discord. There is a seat here for you.</p>
+        <p>I built The Lotus Assembly to close the gap between what women are told and what they actually deserve to know about their bodies, womanhood, health, rights, and the issues that directly affect their lives. Too many of us are navigating life unaware, untrained, and uneducated on who we are, what we are, and how we are. So as the Lady of the Womb, I felt it was my mission to help break the barrier that puts women and our issues as an afterthought.</p>
+        <p>This transition from uneducated to educated is what I like to refer to as <strong>the blossoming of the lotus</strong> — or as I'll call you, Lady Blossoms.</p>
+        <p>My goal is to lead with intentional education to create a community that is built for women, by women. Therefore, within The Lotus Assembly we will gather together to stand, make a change, and in that — heal.</p>
+        <p>This is not a space for surface-level conversation. <strong>This is where women go deeper and where women come to rise.</strong></p>
+        <p>If my page resonates with you, join a cause above or come find us in the Discord if you want to stay up to date on topics that matter to you.</p>
       </div>
     </div>
   </div>
@@ -957,6 +959,111 @@ function handleEmailSignup() {
     errBox.style.display = 'block';
   });
 }
+</script>
+
+<canvas id="particles" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.25;"></canvas>
+
+<script>
+(function() {
+  var canvas = document.getElementById('particles');
+  var ctx    = canvas.getContext('2d');
+  var W, H;
+  var particles = [];
+  var COUNT = 55;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  function Particle() {
+    this.reset();
+  }
+
+  Particle.prototype.reset = function() {
+    this.type    = Math.random() < 0.45 ? 'petal' : 'sparkle';
+    this.x       = Math.random() * W;
+    this.y       = -20 - Math.random() * 80;
+    this.size    = this.type === 'petal'
+                   ? 3.5 + Math.random() * 4
+                   : 1.5 + Math.random() * 2.5;
+    this.speedY  = 0.08 + Math.random() * 0.14;
+    this.speedX  = (Math.random() - 0.5) * 0.1;
+    this.angle   = Math.random() * Math.PI * 2;
+    this.spin    = (Math.random() - 0.5) * 0.006;
+    this.alpha   = 0.18 + Math.random() * 0.22;
+    this.wobble  = Math.random() * Math.PI * 2;
+    this.wobbleSpeed = 0.006 + Math.random() * 0.006;
+
+    if (this.type === 'petal') {
+      var pinks = ['#F4B8CC', '#E8789A', '#FFD6EC'];
+      this.color = pinks[Math.floor(Math.random() * pinks.length)];
+    } else {
+      var golds = ['#F5E6A3', '#E8C97A', '#C9A84C', '#fffbe6'];
+      this.color = golds[Math.floor(Math.random() * golds.length)];
+    }
+  };
+
+  Particle.prototype.update = function() {
+    this.wobble += this.wobbleSpeed;
+    this.y      += this.speedY;
+    this.x      += this.speedX + Math.sin(this.wobble) * 0.35;
+    this.angle  += this.spin;
+    if (this.y > H + 30) this.reset();
+  };
+
+  Particle.prototype.draw = function() {
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+
+    if (this.type === 'petal') {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.size * 0.45, this.size, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = this.color;
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = 3;
+      ctx.beginPath();
+      var s = this.size;
+      ctx.moveTo(0, -s);
+      ctx.lineTo(s * 0.22, -s * 0.22);
+      ctx.lineTo(s, 0);
+      ctx.lineTo(s * 0.22, s * 0.22);
+      ctx.lineTo(0, s);
+      ctx.lineTo(-s * 0.22, s * 0.22);
+      ctx.lineTo(-s, 0);
+      ctx.lineTo(-s * 0.22, -s * 0.22);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    ctx.restore();
+  };
+
+  for (var i = 0; i < COUNT; i++) {
+    var p = new Particle();
+    p.y   = Math.random() * H;
+    particles.push(p);
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+    }
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
 </script>
 </body>
 </html>
